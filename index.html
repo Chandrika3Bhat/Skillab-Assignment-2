@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Store</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+      body {
+            font-family: Arial, sans-serif;
+            background-image: url('https://i.pinimg.com/736x/35/1b/d0/351bd09da325bf176115e3b788a78820.jpg'); /* Add your image URL here */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+        .profile-pic {
+    width: 50px; /* Adjust this value to make the profile picture smaller */
+    height: auto; /* Maintain aspect ratio */
+}
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(143, 213, 179, 0.2);
+            transition: 0.3s;
+            background-color:rgb(199, 241, 140);
+        }
+        .card:hover {
+            box-shadow: 0 8px 16px 0 rgba(197, 240, 238, 0.2);
+        }
+        .footer {
+            background-color: #e8ed5f;
+            padding: 10px;
+            width:70%;
+        }
+        .carousel-caption {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 20px;
+        }
+        .btn-primary, .btn-secondary {
+            margin-top: 10px;
+        }
+        .modal-body {
+            padding: 20px;}
+        .modal-content {
+    background-color: #f1adf3; /* Change this color to your desired background color */
+    border-radius: 10px; /* Add some border-radius for rounded corners */
+    box-shadow: 0 0 20px rgba(221, 187, 231, 0.1); /* Add a box shadow for depth */
+}
+          .carousel-item img {
+            height: 100vh;
+            object-fit: cover;
+        }
+        .special-offers {
+            background-color: #237441;
+            padding: 20px;
+            margin-top: 20px;
+            position: relative; 
+        }
+.wishlist-heart {
+            color: red;
+            cursor: pointer;
+            font-size: 50px;
+    margin-right: 100px;
+        }
+.wishlist-heart::before {
+            content: "\2661"; /* Unicode heart outline symbol */
+      }
+.wishlist-heart.filled::before {
+    content: "\2764";
+            color: red; 
+}
+.offer-price-tag {
+    background-color: #f3dd7b; 
+}
+.gif-container {
+    position: fixed;
+    bottom: 100px; /* Adjust as needed */
+    right: 100px; /* Adjust as needed */
+}
+.gif {
+    width: 200px; /* Adjust the width */
+    height: auto; /* Maintain aspect ratio */
+}</style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#" style="color:darkmagenta">BookShoppie</a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
+                        <li class="nav-item"><a class="nav-link active" href="#" style="color:darkmagenta">Home</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" style="color:darkmagenta">Books</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#" style="color:darkmagenta">Categories</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#"style="color:darkmagenta">About Us</a></li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" id="contactLink"style="color:darkmagenta">Contact</a>
+                        </li>
+                    </ul>
+                    <form id="searchForm">
+                        <input id="searchInput" type="text" placeholder="Search for a book...">
+                        <button type="submit">Search</button>
+                    </form>
+                
+                </div>
+            </div>
+        </nav>
+        <script>
+            document.addEventListener("DOMContentLoaded", function() {
+                document.getElementById("searchForm").addEventListener("submit", function(event) {
+                    event.preventDefault(); // Prevent the default form submission
+                    
+                    var searchTerm = document.getElementById("searchInput").value.toLowerCase();
+                    var books = document.querySelectorAll(".card-title"); // Updated selector to target card titles
+                    var bookFound = false;
+            
+                    books.forEach(function(book) {
+                        var bookTitle = book.textContent.toLowerCase();
+                        var card = book.closest(".card"); // Get the parent card element
+                        if (bookTitle.includes(searchTerm)) {
+                            card.style.display = "block"; // Show the card if it matches the search term
+                            bookFound = true;
+                        } else {
+                            card.style.display = "none"; // Hide the card if it doesn't match
+                        }
+                    });
+            
+                    if (bookFound) {
+                        alert("Book found and displayed below.");
+                    } else {
+                        alert("Book not available. We will update about it soon.");
+                    }
+                });
+            });
+        </script>
+        <script>
+    function addToCart() {
+        var outOfStock = true; 
+if (outOfStock) {
+            var outOfStockModal = new bootstrap.Modal(document.getElementById("outOfStockModal"));
+            outOfStockModal.show();
+        } else {
+            console.log("Book added to cart");
+        }
+    }
+</script>
+<!-- Contact Modal -->
+        <div class="modal fade" id="contactModal" tabindex="-1" aria-labelledby="contactModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="contactModalLabel">Contact</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="mb-3">
+                                <label for="contactName" class="form-label">Name</label>
+                                <input type="text" class="form-control" id="contactName" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactEmail" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="contactEmail" required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="contactMessage" class="form-label">Message</label>
+                                <textarea class="form-control" id="contactMessage" rows="3" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            document.getElementById("contactLink").addEventListener("click", function(event) {
+                event.preventDefault(); // Prevent the default action of following the link
+                var contactModal = new bootstrap.Modal(document.getElementById("contactModal"));
+                contactModal.show();
+            });
+        </script><hr>
+        <div class="container filter-sort">
+            <div class="row">
+                <div class="col-md-6">
+                    <select id="categoryFilter" class="form-select" aria-label="Filter by category">
+                        <option value="" selected>All Categories</option>
+                        <option value="educational">Educational</option>
+                        <option value="poetry">Poetry</option>
+                        <option value="fiction">Fiction</option>
+                        <option value="non-fiction">Non-Fiction</option>
+                    </select>
+                          </div>
+                          <div class="col-md-6 d-flex justify-content-end">
+                            <button id="wishlistButton" class="btn btn-outline-danger me-2" onclick="viewWishlist()" style="color:rgb(230, 242, 230)" >View Wishlist</button>
+                            <button id="cart" class="btn btn-outline-danger" onclick="toggleWishlist()" style="color:rgb(241, 245, 241)">View Cart</button>
+                            <button id="orders" class="btn btn-outline-danger" onclick="toggleWishlist()" style="color:rgb(232, 241, 232)">Orders</button>
+                        </div>
+         </header>
+<hr>
+    <div id="bookCarousel" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#bookCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+        </div>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="https://cdn.kobo.com/book-images/8128ebd5-1cb4-47c8-833e-109dca56d8d9/1200/1200/False/poetry-for-kids-william-shakespeare.jpg" class="d-block w-100" alt="Book 1">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="https://cdn.kobo.com/book-images/ca0488bd-7d9c-4404-a454-069951a102e7/1200/1200/False/the-complete-dramatic-works-of-william-shakespeare-1.jpg" class="d-block w-100" alt="Book 2">
+                    </div>
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5><strong>William Shakespeare</strong></h5>
+                    <p>Explore more books of William Shakespeare</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="https://www.pupilio.com/cdn/shop/products/91mG-SNM3wL_1200x1200.jpg?v=1628319963" class="d-block w-100" alt="Book 3">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="https://m.media-amazon.com/images/I/91n+cfgunXS._SY466_.jpg" class="d-block w-100" alt="Book 4">
+                    </div>
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5><strong>Sudha Murthy</strong></h5>
+                    <p>Explore more books of Sudha Murthy</p>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <div class="row">
+                    <div class="col-md-6">
+                        <img src="https://static.independent.co.uk/2024/01/04/13/Books-Anne_Frank_Novel_57341.jpg" class="d-block w-100" alt="Book 5">
+                    </div>
+                    <div class="col-md-6">
+                        <img src="https://rukminim2.flixcart.com/image/850/1000/kcjexe80/book/9/9/2/the-diary-of-a-young-girl-original-imaftn2wu3es9jpv.jpeg?q=90&crop=false" class="d-block w-100" alt="Book 6">
+                    </div>
+                </div>
+                <div class="carousel-caption d-none d-md-block">
+                    <h5><strong>Alice Hoffman</strong></h5>
+                    <p>Stories of Anne Frank</p>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#bookCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#bookCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+<hr>
+<!-- Special Offers -->
+    <div class="container special-offers mt-4">
+        <h2 class="text-center" style="color:#f1f1f1">Special Offers</h2>
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://www.rawatbooks.com/uploads/bookimages/Community_Practice_Skills__Dorothy_N_Gamble_and_Marie_Weil.jpg" class="card-img-top" alt="Offer 1">
+                    <div class="card-body">
+                        <h5 class="card-title">Special-offers</h5>
+                        <p class="card-text">Get 20% off on this book. Limited time offer!</p>
+                        <a href="#" class="btn btn-warning">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://payhip.com/cdn-cgi/image/format=auto/https://pe56d.s3.amazonaws.com/o_1giimfthr15o02p8jh11q2u1o35d.jpg" class="card-img-top" alt="Offer 2">
+                    <div class="card-body">
+                        <h5 class="card-title">Buy one get one free</h5>
+                        <p class="card-text">Buy one, get one free on selected story books. Hurry up!</p>
+                        <p><i>You get "A Cindrella Story book" </i></p>
+                        <a href="#" class="btn btn-warning">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card">
+                    <img src="https://m.media-amazon.com/images/I/61vL5KkHS0L._AC_UF1000,1000_QL80_.jpg" class="card-img-top" alt="Offer 3">
+                    <div class="card-body">
+                        <h5 class="card-title">Free Shipping</h5>
+                        <p class="card-text">Enjoy free shipping on orders over ₹500. Limited period offer.</p>
+                        <a href="#" class="btn btn-warning">Shop Now</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+<!-- Book Cards -->
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col">
+                <div class="card" data-category="poetry">
+                    <img src="https://m.media-amazon.com/images/I/716o0Q6FJcL._AC_UF1000,1000_QL80_.jpg" class="card-img-top" alt="Book 1">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>The Complete Sonnet And Poem of William Shakespeare</strong></h5>
+                        <p class="card-text">Author: William Shakespeare</p>
+                        <p class="card-text">Poetry</p>
+                        <p class="card-text">Price: ₹801</p>
+                        <p style="color:red"><i>Less stock</i></p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-secondary" style="background-color:rgb(110, 201, 206);">View Details</a>
+                        <span class="wishlist-heart" onclick="toggleWishlist(this)"></span> 
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" data-category="educational">
+                    <img src="https://rukminim2.flixcart.com/image/850/1000/k8ddoy80/book/4/6/4/oswaal-cbse-question-bank-class-10-social-science-book-original-imafqeh9cz3pyf7d.jpeg?q=20&crop=false" class="card-img-top" alt="Book 2">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Oswaal Books</strong></h5>
+                        <ul>
+                            <li>Science</li>
+                            <li>English</li>
+                        </ul>
+                        <p class="card-text">Author: Unknown</p>
+                        <p class="card-text">Educational</p>
+                        <p class="card-text">Price: ₹415</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-secondary" style="background-color:rgb(110, 201, 206);">View Details</a>
+                        <span class="wishlist-heart" onclick="toggleWishlist(this)"></span> 
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" data-category="fiction">
+                    <img src="https://m.media-amazon.com/images/I/71jX9SL21BL._AC_UF1000,1000_QL80_.jpg" class="card-img-top" alt="Book 3">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Treasure Island</strong></h5>
+                        <p class="card-text">Author: Robert Louis Steveson</p>
+                        <p class="card-text">Fiction</p>
+                        <p class="card-text">Price: ₹170</p>
+                        <p style="color:red"><i>Selling fast</i></p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-secondary" style="background-color:rgb(110, 201, 206);">View Details</a>
+                        <span class="wishlist-heart" onclick="toggleWishlist(this)"></span> 
+                </div>
+            </div>
+            </div>
+            <div class="col">  
+                <div class="card" data-category="educational">
+                    <img src="https://www.rawatbooks.com/uploads/bookimages/Human_Rights_in_India.jpg" class="card-img-top" alt="Book 4">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>Human Rights in India</strong></h5>
+                        <p class="card-text">Author: G. Sudarshanam </p>
+                        <p class="card-text">Educational</p>
+                        <p class="card-text">Price:  ₹845.75 </p>
+                        <p style="color:red"><i>Out of stock</i></p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-secondary" style="background-color:rgb(110, 201, 206);">View Details</a>
+                        <span class="wishlist-heart" onclick="toggleWishlist(this)"></span> 
+                </div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="card" data-category="non-fiction">
+                    <img src="https://www.pluggedin.com/wp-content/uploads/2020/01/anne-frank-diary-of-a-young-girl-cover-image-632x1024.jpeg" class="card-img-top" alt="Book 5">
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>The Diary of Young Girl</strong></h5>
+                        <p class="card-text">Author: Anne Frank</p>
+                        <p class="card-text">Non-Fiction</p>
+                        <p class="card-text">Price: ₹117</p>
+                        <a href="#" class="btn btn-primary">Add to Cart</a>
+                        <a href="#" class="btn btn-secondary" style="background-color:rgb(110, 201, 206);">View Details</a>
+                        <span class="wishlist-heart" onclick="toggleWishlist(this)"></span> 
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function toggleWishlist(icon) {
+            icon.classList.toggle('filled');
+        }
+    </script>
+     <script>
+        function filterBooks() {
+            var selectedCategory = document.getElementById("categoryFilter").value;
+            var bookCards = document.querySelectorAll(".card");
+            bookCards.forEach(function(card) {
+                var cardCategory = card.getAttribute("data-category");
+                if (selectedCategory === "" || selectedCategory === cardCategory) {
+                    card.style.display = "block";
+                } else {
+                    card.style.display = "none";
+                }
+            });
+        }
+        document.getElementById("categoryFilter").addEventListener("change", filterBooks);
+        filterBooks();
+    </script>
+<hr>
+    <!-- Book Details Page (Example) -->
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-4">
+                <img src="https://m.media-amazon.com/images/I/716o0Q6FJcL._AC_UF1000,1000_QL80_.jpg" class="img-fluid" alt="Book 1">
+            </div>
+            <div class="col-md-8">
+                <h2 style="color:#1b0e1d"><strong>The Complete Sonnet And Poem of William Shakespeare</strong></h2>
+                <p><strong>Author:</strong> William Shakespeare</p>
+                <p><strong>Description:</strong> William Shakespeare was an English playwright, poet, and actor. He is widely regarded as the greatest writer in the English language and the world's pre-eminent dramatist. He is often called England's national poet and the "Bard of Avon". <a href="#">Wikipedia</a></p>
+                <p><strong>Price:</strong> ₹801</p>
+                <p><b>Top reviews</b></p>
+                <p>
+                    <img src="https://static-00.iconduck.com/assets.00/avatar-default-icon-256x256-0627bafp.png" alt="XYZ's Profile Picture" class="profile-pic"><b>XYZ</b></p>
+                    <div class="star-ratings">
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9734;</span>
+                    </div>
+                    <p><i>Shakespeare is more popular for his plays, but I actually really prefer his poems. This is a great book for anyone interested in poetry or Shakespeare. It does indeed have any sonnet or poem he has written, but it's a pretty small collection nonetheless. It's of great quality for the price. I love this edition. Highly recommended.</i></p>
+                  <p>
+                    <img src="https://static-00.iconduck.com/assets.00/avatar-default-icon-256x256-0627bafp.png" alt="ABC's Profile Picture" class="profile-pic"><b>ABC</b></p>
+                    <div class="star-ratings">
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9733;</span>
+                        <span class="star">&#9734;</span>
+                        <span class="star">&#9734;</span>
+                    </div>
+                    <p><i>Perfect size so you can carry all of Shakespeare’s poems in your handbag</i></p>
+                <a data-bs-toggle="collapse" href="#reviewsCollapse" role="button" aria-expanded="false" aria-controls="reviewsCollapse">
+                    <class="contact-icon"> See more reviews
+                </a>
+                <div class="collapse" id="reviewsCollapse">
+                    <div class="mt-3">
+                        <p><strong>Additional Reviews:</strong></p>
+                        <img src="https://static-00.iconduck.com/assets.00/avatar-default-icon-256x256-0627bafp.png" alt="DEF's Profile Picture" class="profile-pic"><b>DEF</b></p>
+                        <div class="star-ratings">
+                            <span class="star">&#9733;</span>
+                            <span class="star">&#9733;</span>
+                            <span class="star">&#9733;</span>
+                            <span class="star">&#9733;</span>
+                            <span class="star">&#9734;</span>
+                        </div>
+                        <p><i>I'm a literature student and Shakespeare is my all-time favorite. This book is a treasure trove for any Shakespeare enthusiast. The quality of the poems and sonnets is outstanding. Must-have for any serious reader.</i></p>
+                    </div>
+                </div>
+                <p>
+                    <button class="btn btn-primary">Buy Now</button>
+                </p>
+ <div class="container d-flex justify-content-center feedback-section">
+        <h5><b>Was this information helpful?</b></h5>
+        <form>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feedback" id="helpful" value="helpful">
+            <label class="form-check-label" for="helpful"><b>😊 Helpful</b></label>
+          </div>
+          <div class="form-check form-check-inline">
+            <input class="form-check-input" type="radio" name="feedback" id="unhelpful" value="unhelpful">
+            <label class="form-check-label" for="unhelpful"><b>🙁 Unhelpful</b></label>
+          </div>
+        </form>
+      </div>
+<!-- Footer -->
+    <footer class="footer mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <p>&copy; 2024 BookStore. All rights reserved.</p>
+                    <a href="#">info@bookshoppie.com</a>
+                </div>
+                <div class="col-md-6 text-end">
+                    <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a> | <a href="#">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <div class="gif-container">
+        <img src="https://img.pikbest.com/png-images/20191028/push-shopping-cart-to-woman-gif_2515298.png!bw700" alt="Your GIF" class="gif">
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
